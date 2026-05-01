@@ -87,14 +87,6 @@ Une recherche globale a été effectuée sur le mot-clé `http` dans JADX GUI (`
 **8 — Recherche "http" dans JADX**  
 ![Recherche http](screenshots/img8.jpg)
 
-| Terme recherché | Résultat | Niveau de risque |
-|----------------|----------|-----------------|
-| `http` | Namespaces Android internes uniquement | Faible |
-| `password` | Aucun résultat | Faible |
-| `secret` | Aucun résultat | Faible |
-| `api_key` | Aucun résultat | Faible |
-| `DEBUG` | Mode debug activé dans le manifeste | Élevé (si production) |
-
 ---
 
 ### Task 5 — Conversion DEX → JAR avec dex2jar
