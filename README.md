@@ -1,5 +1,5 @@
 # lab4_sec
-# Lab 2 — Analyse Statique d'APK
+# Lab 4 — Analyse Statique d'APK
 
 ## Informations générales
 
@@ -21,7 +21,7 @@
 L'APK a été généré depuis Android Studio via `Build > Build APK(s)`.  
 Il a été localisé dans `app/build/outputs/apk/debug/app-debug.apk` puis copié dans le dossier de travail `C:\Users\WINDOWS 11\Desktop\apk4`.
 
-**Capture 1 — APK généré dans Android Studio**  
+**1 — APK généré dans Android Studio**  
 ![APK généré](screenshots/img1.jpg)
 
 Le hash SHA-256 a été calculé via PowerShell pour assurer la traçabilité :
@@ -30,12 +30,12 @@ Le hash SHA-256 a été calculé via PowerShell pour assurer la traçabilité :
 Get-FileHash -Algorithm SHA256 "C:\Users\WINDOWS 11\Desktop\apk4\app-debug.apk"
 ```
 
-**Capture 2 — Hash SHA-256**  
+**2 — Hash SHA-256**  
 ![Hash SHA256](screenshots/img2.jpg)
 
 Le contenu de l'APK a été listé pour vérifier sa structure interne :
 
-**Capture 3 — Contenu de l'APK**  
+**3 — Contenu de l'APK**  
 ![Contenu APK](screenshots/img3.jpg)
 
 ---
@@ -44,7 +44,7 @@ Le contenu de l'APK a été listé pour vérifier sa structure interne :
 
 L'APK a été ouvert dans JADX GUI. L'arborescence montre la structure complète : code source, ressources, AndroidManifest.xml, et 8 fichiers DEX (multi-dex).
 
-**Capture 4 — JADX GUI : arborescence de l'APK**  
+**4 — JADX GUI : arborescence de l'APK**  
 ![JADX arborescence](screenshots/img4.jpg)
 
 #### Analyse du AndroidManifest.xml
@@ -59,21 +59,21 @@ Points identifiés dans le manifeste :
 - **SplashActivity** exportée avec `android:exported="true"` et intent-filter MAIN/LAUNCHER
 - **Permission** : `com.example.pizzarecipes.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`
 
-**Capture 5 — AndroidManifest.xml dans JADX**  
+**5 — AndroidManifest.xml dans JADX**  
 ![AndroidManifest](screenshots/img5.jpg)
 
 #### Exploration des ressources — strings.xml
 
 Le fichier `strings.xml` contient les chaînes de l'application dont `app_name = "PizzaRecipes"`. Aucune donnée sensible (token, mot de passe, clé API) n'a été trouvée dans ce fichier.
 
-**Capture 6 — strings.xml dans JADX**  
+**6 — strings.xml dans JADX**  
 ![strings.xml](screenshots/img6.jpg)
 
 #### Code source décompilé — MainActivity
 
 La `MainActivity` se trouve dans `com.example.pizzarecipes.ui`. JADX indique qu'elle est chargée depuis `classes3.dex`. Le code est lisible et non obfusqué.
 
-**Capture 7 — MainActivity dans JADX**  
+**7 — MainActivity dans JADX**  
 ![MainActivity JADX](screenshots/img7.jpg)
 
 ---
@@ -84,7 +84,7 @@ Une recherche globale a été effectuée sur le mot-clé `http` dans JADX GUI (`
 
 **Résultats :** Les occurrences trouvées correspondent uniquement à des namespaces Android internes (`http://schemas.android.com/apk/res/android`) et à des classes de bibliothèques (AndroidX, Material). Aucune URL externe codée en dur ni endpoint API n'a été détecté dans le code applicatif.
 
-**Capture 8 — Recherche "http" dans JADX**  
+**8 — Recherche "http" dans JADX**  
 ![Recherche http](screenshots/img8.jpg)
 
 | Terme recherché | Résultat | Niveau de risque |
@@ -108,7 +108,7 @@ mkdir "C:\Users\WINDOWS 11\Desktop\apk4\dex_out"
   Where-Object { $_.Name -like "classes*.dex" } | ForEach-Object { ... }
 ```
 
-**Capture 9 — Extraction des fichiers DEX**  
+**9 — Extraction des fichiers DEX**  
 ![DEX extraits](screenshots/img9.jpg)
 
 Le fichier `classes.dex` a ensuite été converti en `app.jar` avec dex2jar v2.4 :
@@ -120,7 +120,7 @@ cd "C:\outils-lab2\dex2jar"
 
 Le fichier `app.jar` généré fait **8 340 816 octets** (~8 MB).
 
-**Capture 10 — Conversion dex2jar réussie**  
+**10 — Conversion dex2jar réussie**  
 ![dex2jar conversion](screenshots/img10.jpg)
 
 ---
@@ -129,12 +129,12 @@ Le fichier `app.jar` généré fait **8 340 816 octets** (~8 MB).
 
 Le fichier `app.jar` a été ouvert dans JD-GUI. L'arborescence affiche uniquement le bytecode Java (packages : `_COROUTINE`, `android.support.v4`, `androidx`, `com.google`, `kotlin`, `kotlinx.coroutines`), sans accès aux ressources Android.
 
-**Capture 11 — JD-GUI : arborescence de app.jar**  
+**11 — JD-GUI : arborescence de app.jar**  
 ![JD-GUI arborescence](screenshots/img11.jpg)
 
 La `MainActivity` a été comparée dans les deux outils (trouvée dans `app3.jar` côté JD-GUI, correspondant à `classes3.dex`) :
 
-**Capture 12 — Comparaison JADX vs JD-GUI sur MainActivity**  
+**12 — Comparaison JADX vs JD-GUI sur MainActivity**  
 ![Comparaison](screenshots/img12.jpg)
 
 | Aspect | JADX GUI | JD-GUI |
